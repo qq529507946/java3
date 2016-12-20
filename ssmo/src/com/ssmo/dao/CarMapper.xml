@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper	namespace="com.ssmo.dao.CarMapper">
+	<resultMap type="com.ssmo.pojo.Car" id="car-result">
+		<id property="id" column="ID"/>
+		<result property="name" column="NAME"/>
+		<result property="saleDate" column="SALE_DATE"/>
+		<result property="price" column="PRICE"/>
+	</resultMap>
+	
+	<sql id="pagerSQLHeader">
+		select ID,NAME,SALE_DATE saleDate,PRICE from (
+		select row_number() over(
+	</sql>
+	
+	<sql id="orderBy">
+		order by
+		<if test="sort != null and order != null">
+			<choose>
+				<when test="sort=='name'">NAME</when>
+				<when test="sort=='id'">ID</when>
+				<when test="sort=='saleDate'">SALE_DATE</when>
+				<when test="sort=='price'">PRICE</when>
+				<otherwise>ID</otherwise>
+			</choose>
+			
+			<if test="order == 'asc'">ASC</if>
+			<if test="order == 'desc'">DESC</if>
+		</if>
+	</sql>
+	
+	<sql id="whereCase">
+		<where>
+			1=1
+			<if test="name != null and name != ''">
+				and NAME like #{name}
+			</if>
+			<if test="beginDate != null and endDate !=null">
+				and SALE_DATE between #{beginDate} and #{endDate}
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="pagerSQLFoot">
+		<![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+	
+	<select id="findPager" resultMap="car-result">
+		<include refid="pagerSQLHeader"/>
+		<include refid="orderBy"/>
+		) rn,e.* from T_CAR e
+		<include refid="whereCase"/>
+		<include refid="pagerSQLFoot"/>
+	</select>
+	
+	<select id="findTotal" resultType="int">
+		select count(ID) from T_CAR
+		<include refid="whereCase"/>
+	</select>
+</mapper>
