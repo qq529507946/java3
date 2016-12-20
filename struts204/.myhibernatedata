@@ -1,0 +1,20 @@
+#MyEclipse Hibernate Properties
+#Tue Nov 15 09:08:46 CST 2016
+genBasicCompId=false
+sessionFactoryName=com.struts2.dao.HibernateSessionFactory
+profile=
+daoSFId=
+jndiPath=
+detectM2M=false
+reStrategyClass=
+detectO2O=false
+springDaoFile=
+useJavaTypes=true
+keyGenerator=assigned
+genVersionTag=false
+sessionFactoryId=
+basePersistenceClass=
+genAnnotations=false
+reSettingsFile=
+configFile=/struts204/src/hibernate.cfg.xml
+createConfigFile=true

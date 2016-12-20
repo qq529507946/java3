@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="emp-crud" extends="struts-default" namespace="/">
+		<action name="empAction_*" method="{1}"
+			class="com.struts2.action.EmpAction">
+			<result name="list">/emplist.jsp</result>
+			<result name="remove" type="redirectAction">empAction_list</result>
+			
+			<result name="add" type="redirectAction">empAction_list</result>
+			<result name="modify" type="redirectAction">empAction_list</result>
+			<result name="findById">/empedit.jsp</result>
+		</action>
+	</package>
+</struts>    
