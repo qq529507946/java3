@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.EmpMapper">
+
+	<resultMap type="Emp" id="emp-result">
+		<id property="empno" column="EMPNO"/>
+		<result property="ename" column="ENAME"/>
+		<result property="hiredate" column="HIREDATE"/>
+		<result property="sal" column="SAL"/>
+	</resultMap>
+	
+	<sql id="pagerSQLHeader">
+		select EMPNO,ENAME,HIREDATE,SAL from (
+		select row_number() over(
+	</sql>
+	
+	<sql id="orderBy">
+		order by
+		<if test="sort != null and order != null">
+			<choose>
+				<when test="sort=='ename'">ENAME</when>
+				<when test="sort=='empno'">EMPNO</when>
+				<when test="sort=='hiredate'">HIREDATE</when>
+				<when test="sort=='sal'">SAL</when>
+			</choose>
+			<if test="order == 'asc'">ASC</if>
+			<if test="order == 'desc'">DESC</if>
+		</if>
+	</sql>
+	
+	<sql id="whereCase">
+		<where>
+			1=1
+			<if test="ename != null and ename != ''">
+				and ENAME like #{ename}
+			</if>
+			<if test="beginDate != null and endDate !=null">
+				and HIREDATE between #{beginDate} and #{endDate}
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="pagerSQLFoot">
+		<![CDATA[ ) where rn > #{pageno} and rn <= #{pagesize} ]]>
+	</sql>
+	
+	<select id="findPager" resultMap="emp-result">
+		<include refid="pagerSQLHeader"/>
+		<include refid="orderBy"/>
+		) rn,e.* from EMP e
+		<include refid="whereCase"/>
+		<include refid="pagerSQLFoot"/>
+	</select>
+	
+	<select id="findTotal" resultType="int">
+		select count(EMPNO) from EMP
+		<include refid="whereCase"/>
+	</select>
+	<!-- <update id="modifyEmp" parameterType="Emp">
+		update EMP set ENAME=#{ename,jdbcType=VARCHAR},JOB=#{job,jdbcType=VARCHAR},SAL=#{sal,jdbcType=DOUBLE}
+		where EMPNO=#{empno}
+	</update>
+	
+	<delete id="removeEmp" parameterType="int">
+		delete from EMP where EMPNO=#{empno}
+	</delete>
+	
+	<insert id="addEmp" parameterType="Emp">
+		insert into EMP( EMPNO,ENAME,JOB,SAL)
+		values(#{empno},#{ename,jdbcType=VARCHAR},#{hiredate,jdbcType=date},#{sal,jdbcType=DOUBLE})
+	</insert>
+	
+	<resultMap type="Emp" id="emp-result">
+		<id property="empno" column="EMPNO"/>
+		<result property="ename" column="ENAME"/>
+		<result property="hiredate" column="HIREDATE"/>
+		<result property="sal" column="SAL"/>
+	</resultMap>
+	
+	<select id="findAll" resultMap="emp-result">
+		select EMPNO,ENAME,HIREDATE,SAL from EMP
+	</select>  -->
+	
+	<!-- <select id="findById" parameterType="int" resultType="Emp">
+		select EMPNO,ENAME,HIREDATE,SAL from EMP
+		where EMPNO=#{empno}
+	</select> -->
+</mapper>
